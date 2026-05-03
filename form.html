@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Scholarship Application Form</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>📝 Scholarship Application</h1>
+            <a href="index.html" class="back-btn">← Back to Home</a>
+        </header>
+
+        <form id="scholarshipForm" class="form-container">
+            <!-- Personal Details -->
+            <div class="section">
+                <h3>👤 Personal Details</h3>
+                <div class="form-group">
+                    <label>Full Name *</label>
+                    <input type="text" id="fullName" required>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Email *</label>
+                        <input type="email" id="email" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Phone</label>
+                        <input type="tel" id="phone" placeholder="e.g., 9876543210">
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Gender *</label>
+                        <div class="radio-group">
+                            <label class="radio-label">
+                                <input type="radio" name="gender" value="male" required>
+                                <span>Male</span>
+                            </label>
+                            <label class="radio-label">
+                                <input type="radio" name="gender" value="female" required>
+                                <span>Female</span>
+                            </label>
+                            <label class="radio-label">
+                                <input type="radio" name="gender" value="other" required>
+                                <span>Other</span>
+                            </label>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>Date of Birth</label>
+                        <input type="date" id="dob">
+                    </div>
+                </div>
+            </div>
+
+            <!-- Academic & Income -->
+            <div class="section">
+                <h3>🎓 Academic & Income</h3>
+                <div class="form-group">
+                    <label>Annual Income (₹) *</label>
+                    <input type="number" id="income" placeholder="e.g., 250000" required>
+                </div>
+
+                <div class="form-group">
+                    <label>Marks (Percentage) *</label>
+                    <input type="number" id="marks" placeholder="e.g., 85.5" step="0.1" min="0" max="100" required>
+                </div>
+
+                <div class="form-group">
+                    <label>Category *</label>
+                    <select id="category" required>
+                        <option value="">Select Category</option>
+                        <option value="general">General</option>
+                        <option value="obc">OBC</option>
+                        <option value="sc">SC</option>
+                        <option value="st">ST</option>
+                    </select>
+                </div>
+            </div>
+
+            <!-- 👉 BANK DETAILS SECTION -->
+            <div class="section">
+                <h3>🏦 Bank Details</h3>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Bank Name *</label>
+                        <input type="text" id="bankName" placeholder="e.g., State Bank of India" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Account Number *</label>
+                        <input type="text" id="accountNo" placeholder="e.g., 123456789012" required>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>IFSC Code *</label>
+                        <input type="text" id="ifsc" placeholder="e.g., SBIN0001234" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Branch *</label>
+                        <input type="text" id="branch" placeholder="e.g., Main Branch" required>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 👉 DOCUMENTS SECTION -->
+            <div class="section">
+                <h3>📎 Required Documents</h3>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Aadhaar Card</label>
+                        <input type="file" id="aadhaar" accept=".pdf,.jpg,.jpeg,.png">
+                        <small class="file-hint">Upload PDF/JPG (Max 5MB)</small>
+                    </div>
+                    <div class="form-group">
+                        <label>Income Certificate</label>
+                        <input type="file" id="incomeCert" accept=".pdf,.jpg,.jpeg,.png">
+                        <small class="file-hint">Upload PDF/JPG (Max 5MB)</small>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Marks Card</label>
+                        <input type="file" id="marksCard" accept=".pdf,.jpg,.jpeg,.png">
+                        <small class="file-hint">Upload PDF/JPG (Max 5MB)</small>
+                    </div>
+                    <div class="form-group">
+                        <label>Caste Certificate</label>
+                        <input type="file" id="casteCert" accept=".pdf,.jpg,.jpeg,.png">
+                        <small class="file-hint">Upload PDF/JPG (Max 5MB)</small>
+                    </div>
+                </div>
+            </div>
+
+            <button type="submit" class="btn-primary full-width">Submit Application</button>
+        </form>
+    </div>
+
+    <script>
+        document.getElementById('scholarshipForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            // ✅ Get selected gender
+            const selectedGender = document.querySelector('input[name="gender"]:checked');
+            if (!selectedGender) {
+                alert('Please select your gender!');
+                return;
+            }
+            
+            // Collect ALL form data
+            const formData = {
+                fullName: document.getElementById('fullName').value,
+                email: document.getElementById('email').value,
+                phone: document.getElementById('phone').value || 'N/A',
+                gender: selectedGender.value,
+                dob: document.getElementById('dob').value || 'N/A',
+                income: parseInt(document.getElementById('income').value),
+                marks: parseFloat(document.getElementById('marks').value),
+                category: document.getElementById('category').value,
+                // 👉 Bank Details
+                bankName: document.getElementById('bankName').value,
+                accountNo: document.getElementById('accountNo').value,
+                ifsc: document.getElementById('ifsc').value,
+                branch: document.getElementById('branch').value,
+                // 👉 File names (demo)
+                aadhaar: document.getElementById('aadhaar').files[0]?.name || 'Not uploaded',
+                incomeCert: document.getElementById('incomeCert').files[0]?.name || 'Not uploaded',
+                marksCard: document.getElementById('marksCard').files[0]?.name || 'Not uploaded',
+                casteCert: document.getElementById('casteCert').files[0]?.name || 'Not uploaded'
+            };
+
+            localStorage.setItem('scholarshipData', JSON.stringify(formData));
+            window.location.href = 'result.html';
+        });
+    </script>
+</body>
+</html>

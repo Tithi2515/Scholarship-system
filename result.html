@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Scholarship Result</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>📊 Application Result</h1>
+            <a href="form.html" class="back-btn">← Edit Application</a>
+        </header>
+
+        <div id="resultContainer" class="result-container">
+            <!-- Result will be populated by JavaScript -->
+        </div>
+
+        <div class="action-buttons">
+            <a href="index.html" class="btn-secondary">New Application</a>
+            <button onclick="printResult()" class="btn-primary">📄 Print Result</button>
+        </div>
+    </div>
+
+    <script>
+        // Load form data and calculate result
+        window.onload = function() {
+            const data = JSON.parse(localStorage.getItem('scholarshipData'));
+            if (!data) {
+                alert('No application data found. Please fill the form first.');
+                window.location.href = 'form.html';
+                return;
+            }
+
+            // Java-like eligibility logic
+            const eligibility = calculateEligibility(data);
+            displayResult(data, eligibility);
+        };
+
+        function calculateEligibility(data) {
+            let eligible = false;
+            let rank = 0;
+            let reason = '';
+
+            const incomeLimit = {
+                general: 250000,
+                obc: 300000,
+                sc: 350000,
+                st: 400000
+            };
+
+            const marksReq = {
+                general: 75,
+                obc: 70,
+                sc: 65,
+                st: 60
+            };
+
+            if (data.marks >= marksReq[data.category] && data.income <= incomeLimit[data.category]) {
+                eligible = true;
+                reason = '✅ Meets all eligibility criteria';
+            } else {
+                if (data.marks < marksReq[data.category]) {
+                    reason = `Marks required: ${marksReq[data.category]}% (You have ${data.marks}%)`;
+                } else {
+                    reason = `Income limit: ₹${incomeLimit[data.category].toLocaleString()} (Yours: ₹${data.income.toLocaleString()})`;
+                }
+            }
+
+            rank = Math.floor(Math.random() * 1000) + 1;
+            return { eligible, rank, reason, criteria: { incomeLimit: incomeLimit[data.category], marksReq: marksReq[data.category] } };
+        }
+
+        function displayResult(data, eligibility) {
+            const resultDiv = document.getElementById('resultContainer');
+            const statusClass = eligibility.eligible ? 'success' : 'rejected';
+            const statusText = eligibility.eligible ? '✅ ELIGIBLE FOR SCHOLARSHIP' : '❌ NOT ELIGIBLE';
+
+            // Format displays
+            const genderDisplay = data.gender.charAt(0).toUpperCase() + data.gender.slice(1);
+            const accountMask = data.accountNo ? `****${data.accountNo.slice(-4)}` : 'N/A';
+
+            resultDiv.innerHTML = `
+                <div class="result-card ${statusClass}">
+                    <h2>${statusText}</h2>
+                    
+                    <!-- 👉 PERSONAL DETAILS (LINE 85-95) -->
+                    <div class="applicant-info">
+                        <h3>👤 Personal Details</h3>
+                        <div class="info-grid">
+                            <p><strong>Name:</strong> ${data.fullName || 'N/A'}</p>
+                            <p><strong>Email:</strong> ${data.email || 'N/A'}</p>
+                            <p><strong>Phone:</strong> ${data.phone || 'N/A'}</p>
+                            <p><strong>Gender:</strong> ${genderDisplay}</p>
+                            <p><strong>DOB:</strong> ${data.dob ? new Date(data.dob).toLocaleDateString() : 'N/A'}</p>
+                            <p><strong>Category:</strong> ${data.category?.toUpperCase() || 'N/A'}</p>
+                        </div>
+                    </div>
+
+                    <!-- 👉 ACADEMIC DETAILS -->
+                    <div class="academic-info">
+                        <h3>🎓 Academic Details</h3>
+                        <div class="info-grid">
+                            <p><strong>Marks:</strong> ${data.marks || 0}%</p>
+                            <p><strong>Income:</strong> ₹${(data.income || 0).toLocaleString()}</p>
+                        </div>
+                    </div>
+
+                    <!-- 👉 BANK DETAILS (LINE 110-115) -->
+                    <div class="bank-info">
+                        <h3>🏦 Bank Details</h3>
+                        <div class="info-grid">
+                            <p><strong>Bank:</strong> ${data.bankName || 'N/A'}</p>
+                            <p><strong>A/c:</strong> ${accountMask}</p>
+                            <p><strong>IFSC:</strong> ${data.ifsc || 'N/A'}</p>
+                            <p><strong>Branch:</strong> ${data.branch || 'N/A'}</p>
+                        </div>
+                    </div>
+
+                    <!-- 👉 DOCUMENTS (LINE 120-130) -->
+                    <div class="docs-info">
+                        <h3>📎 Uploaded Documents</h3>
+                        <div class="docs-list">
+                            <span>🆔 ${data.aadhaar || 'N/A'}</span>
+                            <span>💰 ${data.incomeCert || 'N/A'}</span>
+                            <span>📜 ${data.casteCert || 'N/A'}</span>
+                            <span>🎓 ${data.marksCard || 'N/A'}</span>
+                            <span>🪙 ${data.panCard || 'N/A'}</span>
+                            <span>🏦 ${data.bankPassbook || 'N/A'}</span>
+                        </div>
+                    </div>
+
+                    ${eligibility.eligible ? `
+                        <div class="rank-section">
+                            <h3>🎉 Congratulations ${data.fullName.split(' ')[0]}!</h3>
+                            <div class="rank-circle">#${eligibility.rank}</div>
+                            <p><strong>YOUR APPLICATION IS SHORTLISTED!</strong></p>
+                            <p>Scholarship amount will be credited to your bank account.</p>
+                            <p>Track status: <strong>scholarship.gov.in/track/${eligibility.rank}</strong></p>
+                        </div>
+                    ` : `
+                        <div class="reason-section">
+                            <h3>❌ Reason for Rejection:</h3>
+                            <p>${eligibility.reason}</p>
+                            <div class="criteria-box">
+                                <h4>✅ Eligibility Criteria:</h4>
+                                <p>Marks ≥ <strong>${eligibility.criteria.marksReq}%</strong></p>
+                                <p>Income ≤ <strong>₹${eligibility.criteria.incomeLimit.toLocaleString()}</strong></p>
+                            </div>
+                        </div>
+                    `}
+                </div>
+            `;
+        }
+
+        function printResult() {
+            window.print();
+        }
+    </script>
+</body>
+</html>

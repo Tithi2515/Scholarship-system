@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Scholarship Portal - Login/Register</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🎓 Scholarship Portal</h1>
+            <p>Apply for Scholarship 2026</p>
+        </header>
+
+        <div class="auth-container">
+            <!-- Login Form -->
+            <div class="form-box active" id="login">
+                <h2>Login</h2>
+                <form id="loginForm">
+                    <input type="text" placeholder="Username" required>
+                    <input type="password" placeholder="Password" required>
+                    <button type="submit">Login</button>
+                </form>
+                <p>Don't have account? <a href="#" onclick="showRegister()">Register here</a></p>
+            </div>
+
+            <!-- Register Form -->
+            <div class="form-box" id="register">
+                <h2>Register</h2>
+                <form id="registerForm">
+                    <input type="text" placeholder="Username" required>
+                    <input type="email" placeholder="Email" required>
+                    <input type="password" placeholder="Password" required>
+                    <button type="submit">Register</button>
+                </form>
+                <p>Already have account? <a href="#" onclick="showLogin()">Login here</a></p>
+            </div>
+        </div>
+
+        <div class="apply-btn">
+            <a href="form.html" class="btn-primary">Apply for Scholarship →</a>
+        </div>
+    </div>
+
+    <script>
+        function showRegister() {
+            document.getElementById('login').classList.remove('active');
+            document.getElementById('register').classList.add('active');
+        }
+
+        function showLogin() {
+            document.getElementById('register').classList.remove('active');
+            document.getElementById('login').classList.add('active');
+        }
+
+        // Demo login/register (for frontend demo)
+        document.getElementById('loginForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            alert('Login Successful! Redirecting to Application...');
+            window.location.href = 'form.html';
+        });
+
+        document.getElementById('registerForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            alert('Registration Successful! You can now login.');
+            showLogin();
+        });
+    </script>
+</body>
+</html>
